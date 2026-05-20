@@ -77,4 +77,14 @@ public class AccountService {
         account.setStatus(Account.AccountStatus.CLOSED);
         accountRepository.save(account);
     }
+
+    public void validateAccountIsActive(Integer accountId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new BusinessException("Account not found with id: " + accountId));
+
+        if (account.getStatus() != Account.AccountStatus.ACTIVE) {
+            throw new BusinessException("Account is closed. Cannot perform operation on closed account.");
+        }
+    }
+
 }

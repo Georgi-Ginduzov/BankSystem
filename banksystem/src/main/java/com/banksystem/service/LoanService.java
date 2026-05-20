@@ -6,9 +6,6 @@ import com.banksystem.model.*;
 import com.banksystem.repository.LoanRepository;
 import com.banksystem.repository.RepaymentRepository;
 import com.banksystem.repository.AccountRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -17,17 +14,17 @@ import java.time.LocalDateTime;
 @Service
 public class LoanService {
 
-    @Autowired
-    private LoanRepository loanRepository;
+    private final LoanRepository loanRepository;
+    private final RepaymentRepository repaymentRepository;
+    private final AccountRepository accountRepository;
 
-    @Autowired
-    private RepaymentRepository repaymentRepository;
-
-    @Autowired
-    private AccountRepository accountRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
+    public LoanService(LoanRepository loanRepository,
+                       RepaymentRepository repaymentRepository,
+                       AccountRepository accountRepository) {
+        this.loanRepository = loanRepository;
+        this.repaymentRepository = repaymentRepository;
+        this.accountRepository = accountRepository;
+    }
 
     @Transactional
     public void markInstallmentAsPaid(InstallmentPaymentDTO request) {
@@ -36,7 +33,7 @@ public class LoanService {
                 .orElseThrow(() -> new BusinessException("Loan not found with id: " + request.getLoanId()));
 
         // Verify loan belongs to client
-        if (!loan.getClientId().equals(request.getClientId())) {
+        if (!loan.getClient().getId().equals(request.getClientId())) {
             throw new BusinessException("Loan does not belong to the specified client");
         }
 
@@ -45,8 +42,8 @@ public class LoanService {
             throw new BusinessException("Loan is not active. Current status: " + loan.getStatus());
         }
 
-        // Find the repayment schedule for this month
-        Repayment repayment = repaymentRepository.findByLoanIdAndMonthNumber(loan.getId(), request.getMonthNumber())
+        // Find the repayment schedule for this month using Loan object
+        Repayment repayment = repaymentRepository.findByLoanAndMonthNumber(loan, request.getMonthNumber())
                 .orElseThrow(() -> new BusinessException("Repayment schedule not found for month " + request.getMonthNumber()));
 
         // Verify payment is not already paid
@@ -63,12 +60,16 @@ public class LoanService {
         }
 
         // Get the associated account
-        Account account = accountRepository.findById(loan.getAccountId())
-                .orElseThrow(() -> new BusinessException("Associated account not found"));
+        Account account = loan.getAccount();
 
         // Verify account exists and is active
+        if (account == null) {
+            throw new BusinessException("Associated account not found");
+        }
+
+        // MEDIUM PRIORITY FIX: Check if account is already closed
         if (account.getStatus() != Account.AccountStatus.ACTIVE) {
-            throw new BusinessException("Associated account is not active");
+            throw new BusinessException("Associated account is not active. Current status: " + account.getStatus());
         }
 
         // Verify sufficient funds
