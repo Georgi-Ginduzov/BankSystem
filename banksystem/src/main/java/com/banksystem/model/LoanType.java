@@ -2,14 +2,14 @@ package com.banksystem.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-@Getter @Setter
 @Entity
 @Table(name = "loan_type")
+@Getter @Setter @Builder
+@NoArgsConstructor @AllArgsConstructor
 public class LoanType
 {
     @Id

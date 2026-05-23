@@ -16,6 +16,7 @@ public class Loan
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
+
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -84,7 +85,9 @@ public class Loan
     private LocalDateTime updatedAt;
 
     public enum LoanStatus {
-        PENDING, ACTIVE, PAID_OFF, DEFAULTED
+        PENDING,
+        ACTIVE,
+        PAID_OFF,
     }
 
     @PrePersist

@@ -6,7 +6,6 @@ import com.banksystem.model.Account;
 import com.banksystem.model.Client;
 import com.banksystem.repository.AccountRepository;
 import com.banksystem.repository.ClientRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -14,11 +13,9 @@ import java.math.BigDecimal;
 @Service
 public class AccountService {
 
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
-    @Autowired
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
 
     public AccountService(AccountRepository accountRepository, ClientRepository clientRepository) {
         this.accountRepository = accountRepository;
