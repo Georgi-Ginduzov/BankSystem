@@ -1,6 +1,7 @@
 package com.banksystem.controller;
 
 import com.banksystem.dto.LoanApplicationDTO;
+import com.banksystem.dto.LoanSummaryDto;
 import com.banksystem.dto.response.ErrorResponseDTO;
 import com.banksystem.exception.LoanTypeCriteriaMismatchException;
 import com.banksystem.exception.ResourceNotFoundException;
@@ -23,6 +24,7 @@ public class LoansController
         this.loanService = loanService;
     }
 
+    // ------------------------------------- Loan applications ------------------------------------------------
     @PostMapping("/apply")
     public ResponseEntity<Object> applyForLoan(@Valid @RequestBody LoanApplicationDTO request)
     {
@@ -53,4 +55,37 @@ public class LoansController
 
         return ResponseEntity.ok().build();
     }
+
+    // ------------------------------------- Loans Read/Update ------------------------------------------------
+    @GetMapping("{id}")
+    public ResponseEntity<LoanSummaryDto> GetLoanById(@PathVariable int id)
+    {
+        var loan = loanService.getLoanById(id);
+
+        return ResponseEntity.ok().body(loan);
+    }
+
+    @PatchMapping("{id}/approve")
+    public ResponseEntity<Object> approveLoan(@PathVariable int id, @RequestParam Integer employeeId)
+    {
+        try
+        {
+            loanService.approveLoan(id, employeeId);
+        }
+        catch (ResourceNotFoundException e)
+        {
+            return ResponseEntity
+                    .status(404)
+                    .body(new ErrorResponseDTO(e.getMessage()));
+        }
+        catch (IllegalStateException e)
+        {
+            return ResponseEntity
+                    .status(409)
+                    .body(new ErrorResponseDTO(e.getMessage()));
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
 }

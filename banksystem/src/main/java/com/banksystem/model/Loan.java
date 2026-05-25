@@ -16,7 +16,6 @@ public class Loan
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
-
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -86,6 +85,7 @@ public class Loan
 
     public enum LoanStatus {
         PENDING,
+        APPROVE,
         ACTIVE,
         PAID_OFF,
     }
