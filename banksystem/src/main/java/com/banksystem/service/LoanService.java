@@ -1,14 +1,15 @@
 package com.banksystem.service;
 
+import com.banksystem.dto.InstallmentPaymentDTO;
 import com.banksystem.dto.LoanApplicationDTO;
 import com.banksystem.dto.LoanSummaryDto;
+import com.banksystem.exception.BusinessException;
 import com.banksystem.exception.LoanTypeCriteriaMismatchException;
 import com.banksystem.exception.ResourceNotFoundException;
 import com.banksystem.model.*;
-import com.banksystem.repository.LoanRepository;
-import com.banksystem.repository.RepaymentRepository;
-import com.banksystem.repository.AccountRepository;
+import com.banksystem.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -219,4 +220,68 @@ public class LoanService {
         var schedule = generateRepaymentSchedule(loan);
         repaymentRepository.saveAll(schedule);
     }
+
+    @Transactional
+    public void markInstallmentAsPaid(InstallmentPaymentDTO request) {
+        Loan loan = loanRepository.findById(request.getLoanId())
+                .orElseThrow(() -> new ResourceNotFoundException("Loan not found with id: " + request.getLoanId()));
+
+        // Verify loan belongs to client
+        if (!loan.getClient().getId().equals(request.getClientId())) {
+            throw new BusinessException("Loan does not belong to the specified client");
+        }
+
+        // Check loan status (must be ACTIVE)
+        if (loan.getStatus() != Loan.LoanStatus.ACTIVE) {
+            throw new BusinessException("Loan is not active. Current status: " + loan.getStatus());
+        }
+
+        // Find repayment schedule
+        Repayment repayment = repaymentRepository.findByLoanAndMonthNumber(loan, request.getMonthNumber())
+                .orElseThrow(() -> new ResourceNotFoundException("Repayment schedule not found for month " + request.getMonthNumber()));
+
+        if (repayment.getStatus() == Repayment.RepaymentStatus.PAID) {
+            throw new BusinessException("Installment for month " + request.getMonthNumber() + " is already paid");
+        }
+
+        // Validate payment amount
+        if (request.getPaymentAmount().compareTo(repayment.getExpectedPaymentAmount()) != 0) {
+            throw new BusinessException(String.format("Payment amount %.2f does not match expected installment amount %.2f",
+                    request.getPaymentAmount(), repayment.getExpectedPaymentAmount()));
+        }
+
+        // Get associated account
+        Account account = loan.getAccount();
+        if (account == null || account.getStatus() != Account.AccountStatus.ACTIVE) {
+            throw new BusinessException("Associated account is not active");
+        }
+
+        if (account.getBalance().compareTo(request.getPaymentAmount()) < 0) {
+            throw new BusinessException("Insufficient funds. Available: " + account.getBalance());
+        }
+
+        // Process payment
+        account.setBalance(account.getBalance().subtract(request.getPaymentAmount()));
+        accountRepository.save(account);
+
+        // Update repayment
+        repayment.setStatus(Repayment.RepaymentStatus.PAID);
+        repayment.setPaymentDate(java.time.LocalDateTime.now());
+        repayment.setActualPaymentAmount(request.getPaymentAmount());
+        repayment.setActualInterestAmount(repayment.getExpectedInterestAmount());
+        repayment.setActualPrincipalAmount(repayment.getExpectedPrincipalAmount());
+        repayment.setActualRemainingToPay(repayment.getExpectedRemainingToPay());
+        repaymentRepository.save(repayment);
+
+        // Update loan
+        BigDecimal newRemaining = loan.getRemainingAmount().subtract(repayment.getExpectedPrincipalAmount());
+        loan.setRemainingAmount(newRemaining);
+        loan.setPaidInstallments(loan.getPaidInstallments() + 1);
+
+        if (newRemaining.compareTo(java.math.BigDecimal.ZERO) <= 0 || loan.getPaidInstallments() >= loan.getTermMonths()) {
+            loan.setStatus(Loan.LoanStatus.PAID_OFF);
+        }
+        loanRepository.save(loan);
+    }
+
 }

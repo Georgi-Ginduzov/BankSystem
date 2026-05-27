@@ -9,6 +9,8 @@ import com.banksystem.service.LoanService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.banksystem.dto.InstallmentPaymentDTO;
+import com.banksystem.exception.BusinessException;
 
 import java.time.LocalDate;
 
@@ -87,5 +89,19 @@ public class LoansController
 
         return ResponseEntity.ok().build();
     }
+
+    // ------------------------------------- Loans Mark Installment as Paid ------------------------------------------------
+    @PostMapping("/payments")
+    public ResponseEntity<Object> markInstallmentPaid(@Valid @RequestBody InstallmentPaymentDTO request) {
+        try {
+            loanService.markInstallmentAsPaid(request);
+            return ResponseEntity.ok().build();
+        } catch (ResourceNotFoundException | BusinessException e) {
+            return ResponseEntity.status(400).body(new ErrorResponseDTO(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ErrorResponseDTO("Unexpected error: " + e.getMessage()));
+        }
+    }
+
 
 }
