@@ -1,20 +1,28 @@
 package com.banksystem.service;
 
 import com.banksystem.dto.ClientRequestDTO;
+import com.banksystem.dto.LoanSummaryDto;
 import com.banksystem.exception.BusinessException;
 import com.banksystem.model.Client;
 import com.banksystem.model.Customer;
+import com.banksystem.model.Loan;
 import com.banksystem.model.Merchant;
 import com.banksystem.repository.ClientRepository;
+import com.banksystem.repository.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class ClientService {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private LoanRepository loanRepository;
 
     @Transactional
     public Client addClient(ClientRequestDTO request) {
@@ -71,5 +79,25 @@ public class ClientService {
     public Client getClientById(String id) {
         return clientRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Client not found with id: " + id));
+    }
+
+    public List<LoanSummaryDto> getLoansByClientId(String id)
+    {
+        return loanRepository
+                .findByClient_Id(id)
+                .stream()
+                .map(loan -> LoanSummaryDto
+                        .builder()
+                        .id(loan.getId())
+                        .initialAmount(loan.getInitialAmount())
+                        .status(loan.getStatus())
+                        .startDate(loan.getStartDate())
+                        .remainingAmount(loan.getRemainingAmount())
+                        .paidInstallments(loan.getPaidInstallments())
+                        .loanTypeName(loan.getLoanType().getName())
+                        .termMonths(loan.getTermMonths())
+                        .monthlyPayment(loan.getMonthlyPayment())
+                        .build())
+                .toList();
     }
 }

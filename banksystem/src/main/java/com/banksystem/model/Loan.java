@@ -84,7 +84,10 @@ public class Loan
     private LocalDateTime updatedAt;
 
     public enum LoanStatus {
-        PENDING, ACTIVE, PAID_OFF, DEFAULTED
+        PENDING,
+        APPROVE,
+        ACTIVE,
+        PAID_OFF,
     }
 
     @PrePersist
