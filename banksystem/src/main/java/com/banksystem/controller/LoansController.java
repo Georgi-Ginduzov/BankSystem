@@ -1,6 +1,6 @@
 package com.banksystem.controller;
 
-import com.banksystem.dto.LoanApplicationDTO;
+import com.banksystem.dto.LoanApplicationFrontendDTO;
 import com.banksystem.dto.LoanSummaryDto;
 import com.banksystem.dto.response.ErrorResponseDTO;
 import com.banksystem.exception.LoanTypeCriteriaMismatchException;
@@ -28,34 +28,15 @@ public class LoansController
 
     // ------------------------------------- Loan applications ------------------------------------------------
     @PostMapping("/apply")
-    public ResponseEntity<Object> applyForLoan(@Valid @RequestBody LoanApplicationDTO request)
-    {
-        if(request.getStartDate().isBefore(LocalDate.now()))
-        {
-            return ResponseEntity
-                    .status(400)
-                    .body(new ErrorResponseDTO("Loan start date cannot be before current date"));
-        }
-
-        try
-        {
+    public ResponseEntity<Object> applyForLoan(@Valid @RequestBody LoanApplicationFrontendDTO request) {
+        try {
             loanService.applyForLoan(request);
+            return ResponseEntity.ok().build();
+        } catch (ResourceNotFoundException | LoanTypeCriteriaMismatchException | BusinessException e) {
+            return ResponseEntity.status(400).body(new ErrorResponseDTO(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ErrorResponseDTO("Unexpected exception: " + e.getMessage()));
         }
-        catch(ResourceNotFoundException | LoanTypeCriteriaMismatchException e)
-        {
-            return ResponseEntity
-                    .status(400)
-                    .body(new ErrorResponseDTO(e.getMessage()));
-        }
-        catch (Exception e)
-        {
-            // Could log full exception
-            return ResponseEntity
-                    .status(500)
-                    .body(new ErrorResponseDTO("Unexpected exception: " + e.getMessage()));
-        }
-
-        return ResponseEntity.ok().build();
     }
 
     // ------------------------------------- Loans Read/Update ------------------------------------------------

@@ -1,6 +1,7 @@
 package com.banksystem.service;
 
 import com.banksystem.dto.InstallmentPaymentDTO;
+import com.banksystem.dto.LoanApplicationFrontendDTO;
 import com.banksystem.dto.LoanApplicationDTO;
 import com.banksystem.dto.LoanSummaryDto;
 import com.banksystem.exception.BusinessException;
@@ -8,13 +9,16 @@ import com.banksystem.exception.LoanTypeCriteriaMismatchException;
 import com.banksystem.exception.ResourceNotFoundException;
 import com.banksystem.model.*;
 import com.banksystem.repository.*;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -221,6 +225,15 @@ public class LoanService {
         repaymentRepository.saveAll(schedule);
     }
 
+    private String mapFrontendLoanType(String frontendType) {
+        return switch (frontendType.toUpperCase()) {
+            case "PERSONAL" -> "Consumer";
+            case "MORTGAGE" -> "Mortgage";
+            case "AUTO" -> "Business"; // or "Auto" if you have it, but we only have Business
+            default -> frontendType; // assume it's already correct
+        };
+    }
+
     @Transactional
     public void markInstallmentAsPaid(InstallmentPaymentDTO request) {
         Loan loan = loanRepository.findById(request.getLoanId())
@@ -282,6 +295,79 @@ public class LoanService {
             loan.setStatus(Loan.LoanStatus.PAID_OFF);
         }
         loanRepository.save(loan);
+    }
+
+    @Transactional
+    public void applyForLoan(LoanApplicationFrontendDTO request) {
+        // Get or create client
+        Client client = getOrCreateClient(request.getCustomerName(), request.getEmail(), request.getPhone());
+
+        // Map loan type from frontend to backend
+        String backendLoanType = mapFrontendLoanType(request.getLoanType());
+        LoanType loanType = loanTypeRepository.findByName(backendLoanType)
+                .orElseThrow(() -> new ResourceNotFoundException("LoanType not found for: " + backendLoanType));
+
+        // Validate amount and term against loan type
+        if (loanType.getMaxAmount().compareTo(request.getAmount()) < 0) {
+            throw new LoanTypeCriteriaMismatchException("Requested amount exceeds maximum allowed for this loan type.");
+        }
+        if (loanType.getMaxTermMonths() < request.getPeriodMonths()) {
+            throw new LoanTypeCriteriaMismatchException("Requested term exceeds maximum allowed for this loan type.");
+        }
+
+        // Set start date to today
+        LocalDate startDate = LocalDate.now();
+
+        // Create loan account
+        Account account = createLoanAccount(client.getId(), request.getAmount());
+
+        // Build loan entity
+        Loan loan = Loan.builder()
+                .loanType(loanType)
+                .client(client)
+                .account(account)
+                .initialAmount(request.getAmount())
+                .startDate(startDate)
+                .status(Loan.LoanStatus.PENDING)
+                .monthlyPayment(calculateLoanApplicationMonthlyPayment(
+                        request.getAmount(),
+                        request.getPeriodMonths(),
+                        loanType.getInterestRate()))
+                .termMonths(request.getPeriodMonths())
+                .remainingAmount(request.getAmount())
+                .build();
+
+        loanRepository.save(loan);
+    }
+
+    private String generateClientId(String email) {
+        // Use email as client ID – remove special characters, keep it simple
+        return email.trim().toLowerCase();
+    }
+
+    private Client getOrCreateClient(String customerName, String email, String phone) {
+        String clientId = generateClientId(email);
+        Optional<Client> existing = clientRepository.findById(clientId);
+        if (existing.isPresent()) {
+            return existing.get();
+        }
+
+        // Parse name into first and last
+        String[] nameParts = customerName.trim().split("\\s+", 2);
+        String firstName = nameParts[0];
+        String lastName = nameParts.length > 1 ? nameParts[1] : "";
+
+        // Create a new Customer with a dummy UCN (use phone if possible, but UCN must be 10 digits, so we generate a placeholder)
+        // For simplicity, we generate a 10-digit number from email hash
+        String ucn = String.valueOf(Math.abs(email.hashCode())).substring(0, 10);
+        // Ensure it's 10 digits
+        while (ucn.length() < 10) ucn = "0" + ucn;
+        if (ucn.length() > 10) ucn = ucn.substring(0, 10);
+
+        Customer customer = new Customer(ucn, firstName, lastName);
+        // Override the ID to be the email (since we use TABLE_PER_CLASS, we can set id)
+        customer.setId(clientId);
+        return clientRepository.save(customer);
     }
 
 }
