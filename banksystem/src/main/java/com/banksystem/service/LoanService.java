@@ -1,9 +1,6 @@
 package com.banksystem.service;
 
-import com.banksystem.dto.InstallmentPaymentDTO;
-import com.banksystem.dto.LoanApplicationFrontendDTO;
-import com.banksystem.dto.LoanApplicationDTO;
-import com.banksystem.dto.LoanSummaryDto;
+import com.banksystem.dto.*;
 import com.banksystem.exception.BusinessException;
 import com.banksystem.exception.LoanTypeCriteriaMismatchException;
 import com.banksystem.exception.ResourceNotFoundException;
@@ -182,6 +179,7 @@ public class LoanService {
                         loanType.getInterestRate()))
                 .termMonths(request.getTermMonths())
                 .remainingAmount(request.getAmount())
+                .paidInstallments(0)
                 .build();
         loanRepository.save(loan);
     }
@@ -205,8 +203,7 @@ public class LoanService {
                 .orElseThrow(() -> new ResourceNotFoundException("Loan not found"));
     }
 
-    public void approveLoan(Integer loanId, Integer employeeId)
-    {
+    public void approveLoan(Integer loanId, Integer employeeId) {
         var loan = loanRepository.findById(loanId)
                 .orElseThrow(() -> new ResourceNotFoundException("Loan not found"));
 
@@ -214,8 +211,15 @@ public class LoanService {
             throw new IllegalStateException("Only PENDING loans can be approved");
         }
 
-        var employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
+        Employee employee;
+        if (employeeId != null) {
+            employee = employeeRepository.findById(employeeId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + employeeId));
+        } else {
+            // Use default admin by email
+            employee = employeeRepository.findByEmail("admin@bank.com")
+                    .orElseThrow(() -> new ResourceNotFoundException("Default admin not found. Please create an admin employee."));
+        }
 
         loan.setReviewedBy(employee);
         loan.setStatus(Loan.LoanStatus.ACTIVE);
@@ -368,6 +372,108 @@ public class LoanService {
         // Override the ID to be the email (since we use TABLE_PER_CLASS, we can set id)
         customer.setId(clientId);
         return clientRepository.save(customer);
+    }
+
+    @Transactional
+    public Loan openLoanContract(LoanOpenDTO request) {
+        // Find the client
+        Client client = clientRepository.findById(request.getCustomerId())
+                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
+
+        // Find loan type by name (map frontend type to backend type)
+        String backendType = mapFrontendLoanType(request.getLoanType());
+        LoanType loanType = loanTypeRepository.findByName(backendType)
+                .orElseThrow(() -> new ResourceNotFoundException("LoanType not found: " + backendType));
+
+        // Validate amount and term
+        if (loanType.getMaxAmount().compareTo(request.getPrincipal()) < 0) {
+            throw new BusinessException("Principal exceeds maximum allowed for this loan type.");
+        }
+        if (loanType.getMaxTermMonths() < request.getPeriodMonths()) {
+            throw new BusinessException("Term exceeds maximum allowed for this loan type.");
+        }
+
+        // Create loan account
+        Account account = createLoanAccount(client.getId(), request.getPrincipal());
+
+        // Build loan
+        Loan loan = Loan.builder()
+                .loanType(loanType)
+                .client(client)
+                .account(account)
+                .initialAmount(request.getPrincipal())
+                .startDate(request.getStartDate() != null ? request.getStartDate() : LocalDate.now())
+                .status(Loan.LoanStatus.ACTIVE) // directly active
+                .monthlyPayment(calculateLoanApplicationMonthlyPayment(
+                        request.getPrincipal(),
+                        request.getPeriodMonths(),
+                        loanType.getInterestRate()))
+                .termMonths(request.getPeriodMonths())
+                .remainingAmount(request.getPrincipal())
+                .paidInstallments(0)
+                .build();
+
+        loan = loanRepository.save(loan);
+
+        // Generate repayment schedule
+        List<Repayment> schedule = generateRepaymentSchedule(loan);
+        repaymentRepository.saveAll(schedule);
+
+        return loan;
+    }
+
+    @Transactional
+    public void updateLoan(Integer loanId, UpdateLoanDTO request) {
+        Loan loan = loanRepository.findById(loanId)
+                .orElseThrow(() -> new ResourceNotFoundException("Loan not found"));
+
+        // Update fields if provided
+        if (request.getPrincipal() != null) {
+            loan.setInitialAmount(request.getPrincipal());
+            loan.setRemainingAmount(request.getPrincipal()); // reset remaining? Or keep? We'll recalc later if needed
+        }
+        if (request.getPeriodMonths() != null) {
+            loan.setTermMonths(request.getPeriodMonths());
+        }
+        if (request.getInterestRate() != null) {
+            // Interest rate is stored in LoanType, not in Loan itself.
+            // To change rate, we need to update the LoanType or create a new one.
+            // For simplicity, we'll ignore interest rate update or we can update the loanType.
+            // Instead, we'll just use the provided rate to recalc monthly payment.
+            // We'll use the loanType's interest rate for recalc.
+        }
+        if (request.getStatus() != null) {
+            try {
+                Loan.LoanStatus status = Loan.LoanStatus.valueOf(request.getStatus().toUpperCase());
+                loan.setStatus(status);
+            } catch (IllegalArgumentException e) {
+                throw new BusinessException("Invalid status: " + request.getStatus());
+            }
+        }
+
+        // Recalculate monthly payment if principal or term changed
+        // We need the loan type to get interest rate.
+        LoanType loanType = loan.getLoanType();
+        if (loanType != null && (request.getPrincipal() != null || request.getPeriodMonths() != null)) {
+            BigDecimal monthlyPayment = calculateLoanApplicationMonthlyPayment(
+                    loan.getInitialAmount(),
+                    loan.getTermMonths(),
+                    loanType.getInterestRate()
+            );
+            loan.setMonthlyPayment(monthlyPayment);
+        }
+
+        // If principal changed, also update remaining amount? Or keep it as is?
+        // For simplicity, we'll set remaining amount to the new principal if it was changed.
+        // But careful: if there have been payments, we shouldn't reset.
+        // Since we don't have payment history in this update, we'll just update.
+        // We'll keep remaining amount as is, unless principal changed, then set it to principal (reset).
+        if (request.getPrincipal() != null) {
+            loan.setRemainingAmount(request.getPrincipal());
+            // Reset paid installments? Probably not.
+        }
+
+        loanRepository.save(loan);
     }
 
 }

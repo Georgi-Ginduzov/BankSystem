@@ -1,7 +1,9 @@
 package com.banksystem.service;
 
+import com.banksystem.dto.AccountFrontendDTO;
 import com.banksystem.dto.AccountRequestDTO;
 import com.banksystem.exception.BusinessException;
+import com.banksystem.exception.ResourceNotFoundException;
 import com.banksystem.model.Account;
 import com.banksystem.model.Client;
 import com.banksystem.repository.AccountRepository;
@@ -85,6 +87,39 @@ public class AccountService {
         if (account.getStatus() != Account.AccountStatus.ACTIVE) {
             throw new BusinessException("Account is closed. Cannot perform operation on closed account.");
         }
+    }
+
+    @Transactional
+    public Account openAccountFrontend(AccountFrontendDTO request) {
+        // Validate client exists
+        Client client = clientRepository.findById(request.getCustomerId())
+                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
+
+        // Generate IBAN (or we can use a fixed one for testing)
+        String iban = generateIban();
+
+        // Map account type from frontend (CHECKING, SAVINGS, BUSINESS)
+        Account.AccountType accountType;
+        try {
+            accountType = Account.AccountType.valueOf(request.getAccountType().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new BusinessException("Invalid account type. Must be CHECKING, SAVINGS, or BUSINESS");
+        }
+
+        // Create account
+        Account account = new Account(
+                request.getCustomerId(),
+                iban,
+                request.getInitialDeposit(),
+                accountType
+        );
+
+        return accountRepository.save(account);
+    }
+
+    private String generateIban() {
+        // Simple generation for demo – use a fixed one or random
+        return "BG80BNBG" + String.format("%018d", System.currentTimeMillis() % 1_000_000_000_000_000_000L);
     }
 
 }

@@ -1,10 +1,13 @@
 package com.banksystem.controller;
 
+import com.banksystem.dto.UpdateLoanDTO;
 import com.banksystem.dto.LoanApplicationFrontendDTO;
+import com.banksystem.dto.LoanOpenDTO;
 import com.banksystem.dto.LoanSummaryDto;
 import com.banksystem.dto.response.ErrorResponseDTO;
 import com.banksystem.exception.LoanTypeCriteriaMismatchException;
 import com.banksystem.exception.ResourceNotFoundException;
+import com.banksystem.model.Loan;
 import com.banksystem.service.LoanService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +19,7 @@ import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/loans")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
 public class LoansController
 {
     private final LoanService loanService;
@@ -49,25 +52,17 @@ public class LoansController
     }
 
     @PatchMapping("{id}/approve")
-    public ResponseEntity<Object> approveLoan(@PathVariable int id, @RequestParam Integer employeeId)
-    {
-        try
-        {
+    public ResponseEntity<Object> approveLoan(@PathVariable int id,
+                                              @RequestParam(required = false) Integer employeeId) {
+        try {
             loanService.approveLoan(id, employeeId);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(404).body(new ErrorResponseDTO(e.getMessage()));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(409).body(new ErrorResponseDTO(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ErrorResponseDTO("Unexpected error: " + e.getMessage()));
         }
-        catch (ResourceNotFoundException e)
-        {
-            return ResponseEntity
-                    .status(404)
-                    .body(new ErrorResponseDTO(e.getMessage()));
-        }
-        catch (IllegalStateException e)
-        {
-            return ResponseEntity
-                    .status(409)
-                    .body(new ErrorResponseDTO(e.getMessage()));
-        }
-
         return ResponseEntity.ok().build();
     }
 
@@ -84,5 +79,31 @@ public class LoansController
         }
     }
 
+    @PostMapping("/open")
+    public ResponseEntity<Object> openLoanContract(@RequestBody LoanOpenDTO request) {
+        try {
+            Loan loan = loanService.openLoanContract(request);
+            return ResponseEntity.ok(loan);
+        } catch (ResourceNotFoundException | BusinessException e) {
+            return ResponseEntity.status(400).body(new ErrorResponseDTO(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ErrorResponseDTO("Unexpected error: " + e.getMessage()));
+        }
+    }
+
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Object> updateLoan(@PathVariable Integer id, @RequestBody UpdateLoanDTO request) {
+        try {
+            loanService.updateLoan(id, request);
+            return ResponseEntity.ok().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(404).body(new ErrorResponseDTO(e.getMessage()));
+        } catch (BusinessException e) {
+            return ResponseEntity.status(400).body(new ErrorResponseDTO(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ErrorResponseDTO("Unexpected error: " + e.getMessage()));
+        }
+    }
 
 }

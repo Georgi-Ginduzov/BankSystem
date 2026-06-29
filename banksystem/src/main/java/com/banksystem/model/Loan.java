@@ -71,6 +71,7 @@ public class Loan
     @Getter @Setter
     private BigDecimal remainingAmount;
 
+    @Builder.Default
     @Column(name = "paid_installments", nullable = false)
     @Getter @Setter
     private Integer paidInstallments = 0;
@@ -88,6 +89,9 @@ public class Loan
         APPROVE,
         ACTIVE,
         PAID_OFF,
+        PAUSED,
+        CLOSED,
+        DEFAULTED
     }
 
     @PrePersist

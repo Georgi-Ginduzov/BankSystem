@@ -1,5 +1,6 @@
 package com.banksystem.controller;
 
+
 import com.banksystem.dto.LoginRequestDTO;
 import com.banksystem.dto.LoginResponseDTO;
 import com.banksystem.dto.response.ErrorResponseDTO;
@@ -12,8 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
 public class AuthController {
+
 
     private final EmployeeService employeeService;
     private final JwtUtil jwtUtil;
@@ -33,4 +35,5 @@ public class AuthController {
             return ResponseEntity.status(401).body(new ErrorResponseDTO(e.getMessage()));
         }
     }
+
 }

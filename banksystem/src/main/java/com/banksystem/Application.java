@@ -21,5 +21,10 @@ public class Application {
 		};
 	}
 
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	//WHEN YOU RUN THE APP OPEN THE FRONTEND FOLDER IN CMD AND TYPE
+	// npm.cmd install, if not already installed
+	// npm.cmd run dev
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 }
