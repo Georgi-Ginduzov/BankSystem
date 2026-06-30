@@ -163,4 +163,60 @@ class AccountServiceTest {
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("Cannot close account with non-zero balance");
     }
+
+    @Test
+    void depositToAccount_success() {
+        Account account = new Account("1234567890", "BG80BNBG96611020345678", new BigDecimal("500.00"), Account.AccountType.CHECKING);
+        account.setId(1);
+        account.setStatus(Account.AccountStatus.ACTIVE);
+        when(accountRepository.findById(1)).thenReturn(Optional.of(account));
+        when(accountRepository.save(any(Account.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Account result = accountService.depositToAccount(1, new BigDecimal("250.00"));
+
+        assertThat(result.getBalance()).isEqualByComparingTo("750.00");
+        verify(accountRepository).save(account);
+    }
+
+    @Test
+    void depositToAccount_closedAccount_throwsException() {
+        Account account = new Account("1234567890", "BG80BNBG96611020345678", new BigDecimal("500.00"), Account.AccountType.CHECKING);
+        account.setId(1);
+        account.setStatus(Account.AccountStatus.CLOSED);
+        when(accountRepository.findById(1)).thenReturn(Optional.of(account));
+
+        assertThatThrownBy(() -> accountService.depositToAccount(1, new BigDecimal("250.00")))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("Only active accounts can receive deposits");
+    }
+
+    @Test
+    void updateAccount_success() {
+        Account account = new Account("1234567890", "BG80BNBG96611020345678", new BigDecimal("500.00"), Account.AccountType.CHECKING);
+        account.setId(1);
+        when(accountRepository.findById(1)).thenReturn(Optional.of(account));
+        when(accountRepository.save(any(Account.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        var request = new com.banksystem.dto.AccountUpdateRequestDTO();
+        request.setBalance(new BigDecimal("900.00"));
+
+        Account result = accountService.updateAccount(1, request);
+
+        assertThat(result.getBalance()).isEqualByComparingTo("900.00");
+        verify(accountRepository).save(account);
+    }
+
+    @Test
+    void updateAccount_negativeBalance_throwsException() {
+        Account account = new Account("1234567890", "BG80BNBG96611020345678", new BigDecimal("500.00"), Account.AccountType.CHECKING);
+        account.setId(1);
+        when(accountRepository.findById(1)).thenReturn(Optional.of(account));
+
+        var request = new com.banksystem.dto.AccountUpdateRequestDTO();
+        request.setBalance(new BigDecimal("-1.00"));
+
+        assertThatThrownBy(() -> accountService.updateAccount(1, request))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("Balance cannot be negative");
+    }
 }

@@ -272,7 +272,7 @@ function LoanApplicationForm({
           </select>
         </label>
         <label>
-          Сума
+          Сума (EUR)
           <input
             name="amount"
             type="number"
@@ -295,7 +295,7 @@ function LoanApplicationForm({
           />
         </label>
         <label>
-          Месечен доход
+          Месечен доход (EUR)
           <input
             name="monthlyIncome"
             type="number"
@@ -319,7 +319,7 @@ function LoanApplicationForm({
 
       <div className="limits-bar">
         <div>
-          <span>Сума</span>
+          <span>Сума в EUR</span>
           <strong>
             {formatCurrency(selectedType.minAmount)} - {formatCurrency(selectedType.maxAmount)}
           </strong>

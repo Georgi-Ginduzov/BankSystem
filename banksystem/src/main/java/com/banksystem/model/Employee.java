@@ -12,7 +12,7 @@ public class Employee
 {
     public enum Role
     {
-        ADMIN, LOAN_OFFICER, MANAGER
+        ADMIN, LOAN_OFFICER, MANAGER, CUSTOMER
     }
 
     @Id
@@ -20,7 +20,7 @@ public class Employee
     private Integer id;
 
     @NotBlank(message = "UCN is required")
-    @Column(unique = true, nullable = false, length = 10)
+    @Column(unique = true, nullable = false, length = 13)
     private String ucn;
 
     @NotBlank(message = "Email is required")

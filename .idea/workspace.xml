@@ -5,12 +5,72 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fc9446e8-b2c2-4788-93b0-a1e2a52216a4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/banksystem/src/main/resources/data.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DOCUMENTATION.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/config/EmployeeIdentifierColumnMigration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/config/EmployeeRoleColumnMigration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/config/LoanStatusColumnMigration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/controller/AnalyticsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/controller/UserManagementController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/AnalyticsOverviewDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/ClientLoanDetailsDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/LoanReviewRequestDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/LoanUpdateRequestDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/RegisterRequestDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/RepaymentPlanItemDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/RepaymentUpdateRequestDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/UserManagementRequestDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/UserManagementResponseDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/service/AnalyticsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/service/RepaymentPlanService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/service/UserManagementService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/banksystem/src/test/java/com/banksystem/service/RepaymentPlanServiceTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/lib/auth.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/AdminUserManagementPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/CustomerAccountsPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/CustomerLoanDetailsPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/CustomerLoanRequestPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/CustomerLoansPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/LoginPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/RegisterPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/controller/AccountController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/controller/ClientController.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/controller/ClientController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/controller/LoansController.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/controller/LoansController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/AccountRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/AccountRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/InstallmentPaymentDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/InstallmentPaymentDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/LoanApplicationFrontendDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/LoanApplicationFrontendDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/LoanSummaryDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/LoanSummaryDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/LoginResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/dto/LoginResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/model/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/model/Employee.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/model/Loan.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/model/Loan.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/repository/EmployeeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/repository/EmployeeRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/repository/LoanRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/repository/LoanRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/repository/RepaymentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/repository/RepaymentRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/service/AccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/service/AccountService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/service/ClientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/service/ClientService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/service/EmployeeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/service/EmployeeService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/service/LoanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/java/com/banksystem/service/LoanService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/banksystem/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/test/java/com/banksystem/service/AccountServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/test/java/com/banksystem/service/AccountServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/test/java/com/banksystem/service/EmployeeServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/test/java/com/banksystem/service/EmployeeServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/banksystem/src/test/java/com/banksystem/service/LoanServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/banksystem/src/test/java/com/banksystem/service/LoanServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/data/pages.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/data/pages.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/lib/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/lib/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/lib/format.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/lib/format.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/HomePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/HomePage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/LoanApplicationsPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/LoanApplicationsPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/LoanManagementPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/LoanManagementPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/NewAccountPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/NewAccountPage.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,19 +92,97 @@
     &quot;accountId&quot;: &quot;404cb97f-00cd-467a-9d91-cc2c5a48d533&quot;
   }
 }</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="6.035597772456551E-7" />
+      <entry key="MS500" value="0.05703534303396575" />
+      <entry key="S2" value="0.48869288320540266" />
+      <entry key="S5" value="0.7509558516678895" />
+      <entry key="S10" value="0.8665770892816688" />
+      <entry key="S30" value="0.9533866528527167" />
+      <entry key="S60" value="0.9764152051523557" />
+      <entry key="M2" value="0.9881372400392344" />
+      <entry key="M5" value="0.9952379013350814" />
+      <entry key="M10" value="0.9976161091998672" />
+      <entry key="M15" value="0.9984101073737671" />
+      <entry key="M30" value="0.9992221232780583" />
+      <entry key="H1" value="1.0187099359455951" />
+      <entry key="H2" value="1.6332524290371893" />
+      <entry key="H4" value="4.6471566818422625" />
+      <entry key="D1" value="16.685920036898338" />
+      <entry key="W1" value="21.14271374860117" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.0" />
+      <entry key="S10" value="1.0" />
+      <entry key="S30" value="1.0000000000023581" />
+      <entry key="S60" value="1.0000015355994012" />
+      <entry key="M2" value="1.0012391964984884" />
+      <entry key="M5" value="1.0693347702037606" />
+      <entry key="M10" value="1.2960790059487783" />
+      <entry key="M15" value="1.5412322954101247" />
+      <entry key="M30" value="2.1523550616732523" />
+      <entry key="H1" value="2.814808279230027" />
+      <entry key="H2" value="3.3928683457090125" />
+      <entry key="H4" value="4.022141154733214" />
+      <entry key="D1" value="5.4575712886053855" />
+      <entry key="W1" value="5.914191866615653" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.0055631440759088616" />
+      <entry key="MS500" value="0.4077786399438239" />
+      <entry key="S2" value="1.2528367591560434" />
+      <entry key="S5" value="1.647868081448493" />
+      <entry key="S10" value="1.8134059997202068" />
+      <entry key="S30" value="1.9352832299236098" />
+      <entry key="S60" value="1.9673163369186741" />
+      <entry key="M2" value="1.984803857719664" />
+      <entry key="M5" value="2.0625179540553504" />
+      <entry key="M10" value="2.292306917349535" />
+      <entry key="M15" value="2.538469649696705" />
+      <entry key="M30" value="3.1506947060241686" />
+      <entry key="H1" value="3.832919352514866" />
+      <entry key="H2" value="5.025747592650968" />
+      <entry key="H4" value="8.66906187403842" />
+      <entry key="D1" value="22.1434303634793" />
+      <entry key="W1" value="27.05689588161703" />
+    </decayedShown>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
   <component name="ProjectId" id="3FOoaSBLAoCTVIVL9jXBjqnowkt" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "user/Rostislav",
+    "Spring Boot.Application.executor": "Debug",
+    "git-widget-placeholder": "user/Georgi",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/Fork/BankSystem",
@@ -57,16 +195,13 @@
   }
 }]]></component>
   <component name="RunManager">
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="BankSystem" />
+    <configuration name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="banksystem" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.banksystem.Application" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="BankSystem" />
-      <option name="filePath" />
-      <method v="2" />
     </configuration>
   </component>
   <component name="SharedIndexes">

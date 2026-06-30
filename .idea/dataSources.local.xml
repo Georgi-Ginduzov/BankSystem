@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="dataSourceStorageLocal" created-in="IU-243.28141.41">
+  <component name="dataSourceStorageLocal" created-in="IU-261.25134.95">
     <data-source name="bank_system@localhost" uuid="9ae3f733-3601-4d21-b125-72cd11084d5f">
-      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MYSQL" />
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="MYSQL">
+        <extra-name-characters>$</extra-name-characters>
+        <identifier-quote-string>`</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="lower" quoted-identifiers="lower" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>root</user-name>
       <schema-mapping />
     </data-source>
   </component>

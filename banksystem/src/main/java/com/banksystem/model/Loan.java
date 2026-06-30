@@ -34,6 +34,11 @@ public class Loan
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "settlement_account_id")
+    @Getter @Setter
+    private Account settlementAccount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewed_by")
     @Getter @Setter
     private Employee reviewedBy;
@@ -58,6 +63,7 @@ public class Loan
     @NotNull(message = "Status is required")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     @Getter @Setter
     private LoanStatus status = LoanStatus.PENDING;
 
@@ -72,6 +78,7 @@ public class Loan
     private BigDecimal remainingAmount;
 
     @Column(name = "paid_installments", nullable = false)
+    @Builder.Default
     @Getter @Setter
     private Integer paidInstallments = 0;
 
@@ -87,6 +94,7 @@ public class Loan
         PENDING,
         APPROVE,
         ACTIVE,
+        REJECTED,
         PAID_OFF,
     }
 

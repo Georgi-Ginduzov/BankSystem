@@ -16,6 +16,8 @@ public class LoanSummaryDto
     @Positive
     private Integer id;
 
+    private String clientId;
+
     private String loanTypeName;
 
     @Positive
@@ -39,4 +41,8 @@ public class LoanSummaryDto
 
     @PositiveOrZero
     private Integer paidInstallments = 0;
+
+    private Integer settlementAccountId;
+
+    private String settlementAccountIban;
 }

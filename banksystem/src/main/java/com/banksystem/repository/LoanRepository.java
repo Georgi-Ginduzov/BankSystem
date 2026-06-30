@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Integer> {
     List<Loan> findByClient_Id(String clientId);
-    //List<Loan> findByClientIdAndStatus(String clientId, Loan.LoanStatus status);
-    Optional<Loan> findByIdAndClientId(Integer id, String clientId);
+    Optional<Loan> findByIdAndClient_Id(Integer id, String clientId);
+    List<Loan> findAllByOrderByIdDesc();
 }
 

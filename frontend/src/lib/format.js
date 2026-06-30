@@ -2,5 +2,6 @@ export const formatCurrency = (value) =>
   new Intl.NumberFormat('bg-BG', {
     style: 'currency',
     currency: 'EUR',
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(Number(value) || 0)

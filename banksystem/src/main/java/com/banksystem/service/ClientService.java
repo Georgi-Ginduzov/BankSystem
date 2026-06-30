@@ -1,14 +1,20 @@
 package com.banksystem.service;
 
 import com.banksystem.dto.ClientRequestDTO;
+import com.banksystem.dto.ClientLoanDetailsDTO;
 import com.banksystem.dto.LoanSummaryDto;
+import com.banksystem.dto.RepaymentPlanItemDTO;
 import com.banksystem.exception.BusinessException;
+import com.banksystem.model.Account;
 import com.banksystem.model.Client;
 import com.banksystem.model.Customer;
 import com.banksystem.model.Loan;
 import com.banksystem.model.Merchant;
+import com.banksystem.model.Repayment;
+import com.banksystem.repository.AccountRepository;
 import com.banksystem.repository.ClientRepository;
 import com.banksystem.repository.LoanRepository;
+import com.banksystem.repository.RepaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +29,12 @@ public class ClientService {
 
     @Autowired
     private LoanRepository loanRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private RepaymentRepository repaymentRepository;
 
     @Transactional
     public Client addClient(ClientRequestDTO request) {
@@ -97,7 +109,52 @@ public class ClientService {
                         .loanTypeName(loan.getLoanType().getName())
                         .termMonths(loan.getTermMonths())
                         .monthlyPayment(loan.getMonthlyPayment())
-                        .build())
+                .build())
                 .toList();
+    }
+
+    public List<Account> getAccountsByClientId(String id) {
+        clientRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Client not found with id: " + id));
+
+        return accountRepository.findByClientId(id);
+    }
+
+    public ClientLoanDetailsDTO getLoanDetailsByClientId(String clientId, Integer loanId) {
+        clientRepository.findById(clientId)
+                .orElseThrow(() -> new BusinessException("Client not found with id: " + clientId));
+
+        Loan loan = loanRepository.findByIdAndClient_Id(loanId, clientId)
+                .orElseThrow(() -> new BusinessException("Loan not found for the specified client"));
+
+        List<RepaymentPlanItemDTO> repaymentPlan = repaymentRepository.findByLoanOrderByMonthNumberAsc(loan)
+                .stream()
+                .map(repayment -> new RepaymentPlanItemDTO(
+                        repayment.getMonthNumber(),
+                        repayment.getDueDate(),
+                        repayment.getStatus(),
+                        repayment.getExpectedPaymentAmount(),
+                        repayment.getExpectedPrincipalAmount(),
+                        repayment.getExpectedInterestAmount(),
+                        repayment.getExpectedRemainingToPay(),
+                        repayment.getPaymentDate(),
+                        repayment.getActualPaymentAmount()
+                ))
+                .toList();
+
+        return new ClientLoanDetailsDTO(
+                loan.getId(),
+                loan.getLoanType().getName(),
+                loan.getStatus(),
+                loan.getInitialAmount(),
+                loan.getRemainingAmount(),
+                loan.getMonthlyPayment(),
+                loan.getTermMonths(),
+                loan.getPaidInstallments(),
+                loan.getStartDate(),
+                loan.getSettlementAccount() != null ? loan.getSettlementAccount().getId() : null,
+                loan.getSettlementAccount() != null ? loan.getSettlementAccount().getIban() : null,
+                repaymentPlan
+        );
     }
 }

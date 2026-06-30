@@ -8,8 +8,7 @@ public class AccountRequestDTO {
     @NotBlank(message = "Client ID is required")
     private String clientId;
 
-    @NotBlank(message = "IBAN is required")
-    @Pattern(regexp = "^[A-Z]{2}[0-9A-Z]{20,30}$", message = "Invalid IBAN format")
+    @Pattern(regexp = "^$|^[A-Z]{2}[0-9A-Z]{20,30}$", message = "Invalid IBAN format")
     private String iban;
 
     @NotNull(message = "Initial deposit is required")

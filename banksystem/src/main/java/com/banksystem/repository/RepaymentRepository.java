@@ -15,4 +15,6 @@ public interface RepaymentRepository extends JpaRepository<Repayment, Integer> {
     Optional<Repayment> findByLoanAndMonthNumber(Loan loan, Integer monthNumber);
 
     long countByLoanAndStatus(Loan loan, Repayment.RepaymentStatus status);
+
+    void deleteByLoan(Loan loan);
 }

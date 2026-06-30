@@ -1,7 +1,9 @@
 package com.banksystem.controller;
 
 import com.banksystem.dto.ClientRequestDTO;
+import com.banksystem.dto.ClientLoanDetailsDTO;
 import com.banksystem.dto.LoanSummaryDto;
+import com.banksystem.model.Account;
 import com.banksystem.model.Client;
 import com.banksystem.service.ClientService;
 import jakarta.validation.Valid;
@@ -16,7 +18,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/clients")
-@CrossOrigin(origins = "http://localhost:3000")
 public class ClientController {
 
     @Autowired
@@ -38,5 +39,20 @@ public class ClientController {
     public ResponseEntity<List<LoanSummaryDto>> getLoans(@PathVariable @NotBlank @NotNull String id)
     {
         return ResponseEntity.ok(clientService.getLoansByClientId(id));
+    }
+
+    @GetMapping("/{id}/loans/{loanId}")
+    public ResponseEntity<ClientLoanDetailsDTO> getLoanDetails(
+            @PathVariable @NotBlank @NotNull String id,
+            @PathVariable Integer loanId
+    )
+    {
+        return ResponseEntity.ok(clientService.getLoanDetailsByClientId(id, loanId));
+    }
+
+    @GetMapping("/{id}/accounts")
+    public ResponseEntity<List<Account>> getAccounts(@PathVariable @NotBlank @NotNull String id)
+    {
+        return ResponseEntity.ok(clientService.getAccountsByClientId(id));
     }
 }

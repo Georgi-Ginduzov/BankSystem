@@ -12,11 +12,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor @AllArgsConstructor
 public class LoanApplicationFrontendDTO {
 
-    @NotBlank(message = "Customer name is required")
+    private String clientId;
+
     private String customerName;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
     private String email;
 
     @NotBlank(message = "Phone is required")
@@ -28,6 +27,8 @@ public class LoanApplicationFrontendDTO {
     @NotNull(message = "Amount is required")
     @Positive(message = "Amount must be positive")
     private BigDecimal amount;
+
+    private Integer repaymentAccountId;
 
     @NotNull(message = "Period months is required")
     @Positive(message = "Period months must be positive")
